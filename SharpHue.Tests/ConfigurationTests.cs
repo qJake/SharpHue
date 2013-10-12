@@ -35,5 +35,19 @@ namespace SharpHue.Tests
 
             lights[2].SetState(b);
         }
+
+        [TestMethod]
+        public void SetLightFromColor2()
+        {
+            Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
+            LightCollection lights = new LightCollection();
+
+            new LightStateBuilder()
+                .For(lights)
+                .TurnOn()
+                .ColorTemperature(153)
+                .Brightness(255)
+                .Apply();
+        }
     }
 }

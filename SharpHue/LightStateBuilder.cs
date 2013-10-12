@@ -16,7 +16,9 @@ namespace SharpHue
         /// <summary>
         /// Stores the current state.
         /// </summary>
-        private JObject stateObject;
+        private JObject stateObject { get; set; }
+
+        private List<Light> associatedLights { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the LightStateBuilder class.
@@ -24,6 +26,35 @@ namespace SharpHue
         public LightStateBuilder()
         {
             stateObject = new JObject();
+            associatedLights = new List<Light>();
+        }
+
+        /// <summary>
+        /// When <see cref="Apply" /> is called, applies the state information stored in this LightStateBuilder to each of the lights passed in to this method.
+        /// </summary>
+        /// <param name="lights">The light(s) for which this new state applies to. To actually apply the new state, call <see cref="Apply" />.</param>
+        /// <returns>This LightStateBuilder instance, for method chaining.</returns>
+        public LightStateBuilder For(params Light[] lights)
+        {
+            foreach (var l in lights)
+            {
+                associatedLights.Add(l);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// When <see cref="Apply" /> is called, applies the state information stored in this LightStateBuilder to each of the lights passed in to this method.
+        /// </summary>
+        /// <param name="lights">The light(s) for which this new state applies to. To actually apply the new state, call <see cref="Apply" />.</param>
+        /// <returns>This LightStateBuilder instance, for method chaining.</returns>
+        public LightStateBuilder For(IEnumerable<Light> lights)
+        {
+            foreach (var l in lights)
+            {
+                associatedLights.Add(l);
+            }
+            return this;
         }
 
         /// <summary>
@@ -117,11 +148,8 @@ namespace SharpHue
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
         public LightStateBuilder Effect(LightEffect effect)
         {
-            if (effect != LightEffect.None)
-            {
-                stateObject.Add(new JProperty("effect", effect.ToString().ToLower()));
-                AddOrUpdateProperty("effect", effect.ToString().ToLower());
-            }
+            stateObject.Add(new JProperty("effect", effect.ToString().ToLower()));
+            AddOrUpdateProperty("effect", effect.ToString().ToLower());
             return this;
         }
 
@@ -131,10 +159,7 @@ namespace SharpHue
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
         public LightStateBuilder Alert(LightAlert alert)
         {
-            if (alert != LightAlert.None)
-            {
-                AddOrUpdateProperty("alert", alert.ToString().ToLower());
-            }
+            AddOrUpdateProperty("alert", alert.ToString().ToLower());
             return this;
         }
 
@@ -146,6 +171,17 @@ namespace SharpHue
         {
             AddOrUpdateProperty("transitiontime", time);
             return this;
+        }
+
+        /// <summary>
+        /// Applies the state contained within this LightStateBuilder to the lights specified in any <see cref="For" /> method calls.
+        /// </summary>
+        public void Apply()
+        {
+            foreach (var l in associatedLights)
+            {
+                l.SetState(GetJson());
+            }
         }
 
         /// <summary>
