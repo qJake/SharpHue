@@ -121,6 +121,7 @@
     <Compile Include="Lights\LightAlert.cs" />
     <Compile Include="Lights\LightEffect.cs" />
     <Compile Include="Lights\LightCollection.cs" />
+    <Compile Include="Lights\LightService.cs" />
     <Compile Include="Lights\LightState.cs" />
     <Compile Include="Lights\LightStateBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -64,6 +64,24 @@ namespace SharpHue.Tests
         }
 
         [TestMethod]
+        public void SetAllLightsRandom()
+        {
+            Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
+
+            LightCollection lights = new LightCollection();
+
+            foreach (var l in lights)
+            {
+                new LightStateBuilder()
+                    .For(l)
+                    .TurnOn()
+                    .Brightness(255)
+                    .RandomColor()
+                    .Apply();
+            }
+        }
+
+        [TestMethod]
         public void ResetLights()
         {
             Configuration.Initialize("36e02089265925772f085fcd3884ec9b");

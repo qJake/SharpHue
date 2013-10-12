@@ -29,12 +29,18 @@ namespace SharpHue
         private bool applyAll { get; set; }
 
         /// <summary>
+        /// Gets or sets the random instance for this builder.
+        /// </summary>
+        private Random random { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the LightStateBuilder class.
         /// </summary>
         public LightStateBuilder()
         {
             stateObject = new JObject();
             associatedLights = new List<Light>();
+            random = new Random();
         }
 
         /// <summary>
@@ -105,6 +111,16 @@ namespace SharpHue
             AddOrUpdateProperty("hue", (ushort)Math.Round(hsb.H * 256));
             AddOrUpdateProperty("sat", (byte)Math.Round(hsb.S));
             AddOrUpdateProperty("bri", (byte)Math.Round(hsb.B));
+            return this;
+        }
+
+        /// <summary>
+        /// When this state is sent to the bridge, sets the light's color to a random hue, using the current saturation and brightness levels.
+        /// </summary>
+        /// <returns>This LightStateBuilder instance, for method chaining.</returns>
+        public LightStateBuilder RandomColor()
+        {     
+            AddOrUpdateProperty("hue", random.Next(0, 65535));
             return this;
         }
 

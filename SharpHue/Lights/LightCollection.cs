@@ -89,15 +89,6 @@ namespace SharpHue
             }
         }
 
-        /// <summary>
-        /// Sets the state of all lights, using Group 0.
-        /// </summary>
-        /// <param name="newState">The new state to apply to every light.</param>
-        public static void SetStateAll(JObject newState)
-        {
-            JsonClient.Request(HttpMethod.Put, Configuration.GetAuthRequest("/groups/0/action"), newState);
-        }
-
         #region ICollection<T> Implementation
 
         /// <summary>
