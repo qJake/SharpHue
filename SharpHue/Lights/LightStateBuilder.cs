@@ -55,6 +55,21 @@ namespace SharpHue
         }
 
         /// <summary>
+        /// When <see cref="Apply" /> is called, applies the state information stored in this LightStateBuilder to each of the light indices passed in to this method.
+        /// </summary>
+        /// <param name="lights">The collection of lights that this new state applies to. To select lights, pass in one or more <paramref name="indices" />. To actually apply the new state, call <see cref="Apply" />.</param>
+        /// <param name="indices">The indices within the <paramref name="lights" /> collection to apply to.</param>
+        /// <returns>This LightStateBuilder instance, for method chaining.</returns>
+        public LightStateBuilder For(LightCollection lights, params int[] indices)
+        {
+            foreach (var i in indices)
+            {
+                associatedLights.Add(lights[i]);
+            }
+            return this;
+        }
+
+        /// <summary>
         /// When <see cref="Apply" /> is called, applies the state information stored in this LightStateBuilder to each of the lights passed in to this method.
         /// </summary>
         /// <param name="lights">The light(s) for which this new state applies to. To actually apply the new state, call <see cref="Apply" />.</param>

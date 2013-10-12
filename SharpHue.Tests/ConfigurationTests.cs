@@ -62,16 +62,18 @@ namespace SharpHue.Tests
         }
 
         [TestMethod]
-        public void SetAllLightsRandom()
+        public void SetLightsRandom()
         {
             Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
 
             LightCollection lights = new LightCollection();
 
-            foreach (var l in lights)
+            var indices = new int[] { 1, 3, 5 };
+
+            foreach (var i in indices)
             {
                 new LightStateBuilder()
-                    .For(l)
+                    .For(lights[i])
                     .TurnOn()
                     .Brightness(255)
                     .RandomColor()
@@ -97,14 +99,14 @@ namespace SharpHue.Tests
             LightCollection lights = new LightCollection();
 
             new LightStateBuilder()
-                .For(lights[1], lights[3])
+                .For(lights, 1, 3)
                 .TurnOn()
                 .ColorTemperature(137)
                 .Effect(LightEffect.None)
                 .Apply();
 
             new LightStateBuilder()
-                .For(lights[2])
+                .For(lights[5])
                 .TurnOff()
                 .Apply();
         }
