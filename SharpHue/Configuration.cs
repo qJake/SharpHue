@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Dynamic;
 using System.Net;
 using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace SharpHue
 {
