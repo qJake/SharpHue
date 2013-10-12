@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace SharpHue
 {
+    /// <summary>
+    /// Represents the entire set of lights in a Hue system.
+    /// </summary>
     public class LightCollection : IReadOnlyCollection<Light>
     {
         /// <summary>

@@ -29,10 +29,9 @@ namespace SharpHue.Tests
             LightCollection lights = new LightCollection();
 
             LightStateBuilder b = new LightStateBuilder()
-                .TurnOn()
-                .Color(Color.Red)
+                .TurnOff()
                 .Brightness(255)
-                .TransitionTime(10);
+                .XYCoordinates(0.25, 0.725);
 
             lights[2].SetState(b);
         }

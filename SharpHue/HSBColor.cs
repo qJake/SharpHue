@@ -6,8 +6,9 @@ using System.Drawing;
 namespace SharpHue
 {
     /// <summary>
-    /// Provides Round-trip conversion from RGB to HSB and back
+    /// Encapsulates a color using HSB values.
     /// </summary>
+    /// <remarks>Source: http://www.codeproject.com/Articles/11340/Use-both-RGB-and-HSB-color-schemas-in-your-NET-app </remarks>
     public struct HSBColor
     {
         float h;

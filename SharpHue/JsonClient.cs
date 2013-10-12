@@ -8,7 +8,7 @@ using System.Net.Http;
 
 namespace SharpHue
 {
-    static class JsonClient
+    internal static class JsonClient
     {
         public static JToken Request(string apiPath)
         {
@@ -18,6 +18,11 @@ namespace SharpHue
         public static JToken Request(HttpMethod method, string apiPath)
         {
             return Request(method, apiPath, (string)null);
+        }
+
+        public static JToken Request(HttpMethod method, string apiPath, JObject data)
+        {
+            return Request(method, apiPath, data.ToString());
         }
 
         public static JToken Request(HttpMethod method, string apiPath, object data)

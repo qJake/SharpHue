@@ -23,6 +23,9 @@ namespace SharpHue
     }
     */
     
+    /// <summary>
+    /// Stores information about the state of a light, including color information, current alert / effect settings, and more.
+    /// </summary>
     public class LightState
     {
         /// <summary>
