@@ -57,7 +57,7 @@ This will initialize the API with the specified preexisting username, and will e
 LightCollection lights = new LightCollection();
 ```
 
-This will retrieve all lights and their associated light state information.
+This will retrieve all lights and their associated light state information. If you already have a `LightCollection` and want to refresh it, simply call `lights.Refresh()`.
 
 Once you have a light collection, you can reference lights either by index:
 
