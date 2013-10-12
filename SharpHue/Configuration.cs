@@ -1,8 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +16,8 @@ namespace SharpHue
     {
         public static string Username { get; set; }
         public static IPAddress DeviceIP { get; set; }
+
+        private const string APP_ID = "SharpHue";
 
         static Configuration()
         {
@@ -50,9 +56,25 @@ namespace SharpHue
             }
         }
 
-        private static void RegisterNewUser()
+        private static void RegisterNewUser(string username = null)
         {
+            Contract.Requires(DeviceIP != null);
 
+            dynamic data = new ExpandoObject();
+
+            data.devicetype = APP_ID;
+
+            if (username != null)
+            {
+                data.username = username;
+            }
+            
+            JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
+
+            if (response[0]["success"]["username"] != null)
+            {
+                Username = response[0]["success"]["username"].ToString();
+            }
         }
 
         public static void Register()
