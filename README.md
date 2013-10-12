@@ -8,6 +8,8 @@ An open-source .NET library for the Philips Hue lighting system.
 * Add a new user to the Bridge whitelist
 * Retrieve all lights and light state information
 * Set new light state information
+* Set light state for multiple lights or all lights
+* Discover new lights
 
 
 ## Planned Features
