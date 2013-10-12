@@ -91,7 +91,7 @@ namespace SharpHue
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
         public LightStateBuilder TurnOff()
         {
-            AddOrUpdateProperty("off", false);
+            AddOrUpdateProperty("on", false);
             return this;
         }
 
