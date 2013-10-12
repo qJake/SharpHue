@@ -18,7 +18,15 @@ namespace SharpHue
         /// </summary>
         private JObject stateObject { get; set; }
 
+        /// <summary>
+        /// Gets or sets the associated lights to apply this new state to.
+        /// </summary>
         private List<Light> associatedLights { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether or not to apply this state to all lights (using group 0).
+        /// </summary>
+        private bool applyAll { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the LightStateBuilder class.
@@ -58,12 +66,21 @@ namespace SharpHue
         }
 
         /// <summary>
+        /// When <see cref="Apply" /> is called, applies the state information stored in this LightStateBuilder to every light (using Group 0).
+        /// </summary>
+        /// <returns>This LightStateBuilder instance, for method chaining.</returns>
+        public LightStateBuilder ForAll()
+        {
+            applyAll = true;
+            return this;
+        }
+
+        /// <summary>
         /// When this state is sent to the bridge, turns the light on.
         /// </summary>
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
         public LightStateBuilder TurnOn()
         {
-            stateObject.Add(new JProperty("on", true));
             AddOrUpdateProperty("on", true);
             return this;
         }
@@ -74,8 +91,7 @@ namespace SharpHue
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
         public LightStateBuilder TurnOff()
         {
-            stateObject.Add(new JProperty("on", false));
-            AddOrUpdateProperty("on", false);
+            AddOrUpdateProperty("off", false);
             return this;
         }
 
@@ -178,9 +194,16 @@ namespace SharpHue
         /// </summary>
         public void Apply()
         {
-            foreach (var l in associatedLights)
+            if (applyAll)
             {
-                l.SetState(GetJson());
+                LightCollection.SetStateAll(GetJson());
+            }
+            else
+            {
+                foreach (var l in associatedLights)
+                {
+                    l.SetState(GetJson());
+                }
             }
         }
 

@@ -43,10 +43,23 @@ namespace SharpHue.Tests
             LightCollection lights = new LightCollection();
 
             new LightStateBuilder()
-                .For(lights)
+                .For(lights[1], lights[3])
                 .TurnOn()
                 .ColorTemperature(153)
                 .Brightness(255)
+                .Apply();
+        }
+
+        [TestMethod]
+        public void SetAllLightStates()
+        {
+            Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
+
+            new LightStateBuilder()
+                .ForAll()
+                .TurnOn()
+                .Brightness(255)
+                .Effect(LightEffect.ColorLoop)
                 .Apply();
         }
     }
