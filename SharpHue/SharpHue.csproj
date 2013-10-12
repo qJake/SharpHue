@@ -117,12 +117,12 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="HSBColor.cs" />
     <Compile Include="JsonClient.cs" />
-    <Compile Include="Light.cs" />
-    <Compile Include="LightAlert.cs" />
-    <Compile Include="LightEffect.cs" />
-    <Compile Include="LightCollection.cs" />
-    <Compile Include="LightState.cs" />
-    <Compile Include="LightStateBuilder.cs" />
+    <Compile Include="Lights\Light.cs" />
+    <Compile Include="Lights\LightAlert.cs" />
+    <Compile Include="Lights\LightEffect.cs" />
+    <Compile Include="Lights\LightCollection.cs" />
+    <Compile Include="Lights\LightState.cs" />
+    <Compile Include="Lights\LightStateBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
