@@ -17,7 +17,8 @@ namespace SharpHue
         public static string Username { get; set; }
         public static IPAddress DeviceIP { get; set; }
 
-        private const string APP_ID = "SharpHue";
+        internal const string APP_ID = "SharpHue";
+        internal const int MAX_LIGHTS = 50;
 
         static Configuration()
         {
@@ -25,7 +26,7 @@ namespace SharpHue
             DeviceIP = null;
         }
 
-        public static void Initialize()
+        public static void AddUser()
         {
             DiscoverBridgeIP();
             RegisterNewUser();
@@ -41,6 +42,11 @@ namespace SharpHue
         {
             Username = null;
             DeviceIP = bridgeIP;
+        }
+
+        internal static string GetAuthRequest(string apiPath)
+        {
+            return "/api/" + Username + (apiPath.StartsWith("/") ? "" : "/") + apiPath;
         }
 
         private static void DiscoverBridgeIP()

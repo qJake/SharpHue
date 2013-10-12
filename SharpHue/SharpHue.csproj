@@ -46,6 +46,8 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="JsonClient.cs" />
+    <Compile Include="Light.cs" />
+    <Compile Include="Lights.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,8 +8,8 @@ namespace SharpHue
 {
     public class HueApiException : Exception
     {
-        public int ErrorID {get;set;}
-        public string RequestPath {get;set;}
+        public int ErrorID { get; set; }
+        public string RequestPath { get; set; }
 
         public HueApiException(string message, int ID, string path)
             : base(message)
