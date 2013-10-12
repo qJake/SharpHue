@@ -212,10 +212,14 @@ namespace SharpHue
         {
             if (applyAll)
             {
-                LightCollection.SetStateAll(GetJson());
+                LightService.SetStateAll(GetJson());
             }
             else
             {
+                if (associatedLights.Count == 0)
+                {
+                    throw new StateBuilderException("Apply() was called with no associated lights. Did you forget to call For() or ForAll()?");
+                }
                 foreach (var l in associatedLights)
                 {
                     l.SetState(GetJson());

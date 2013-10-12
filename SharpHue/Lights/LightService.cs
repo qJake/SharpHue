@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpHue.Lights
+namespace SharpHue
 {
     public static class LightService
     {

@@ -82,6 +82,17 @@ namespace SharpHue.Tests
         }
 
         [TestMethod]
+        public void FlashAllLights()
+        {
+            Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
+            new LightStateBuilder()
+                .ForAll()
+                .TurnOn()
+                .Alert(LightAlert.LSelect)
+                .Apply();
+        }
+
+        [TestMethod]
         public void ResetLights()
         {
             Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
@@ -98,6 +109,13 @@ namespace SharpHue.Tests
                 .For(lights[2])
                 .TurnOff()
                 .Apply();
+        }
+
+        [TestMethod]
+        public void DiscoverNewLights()
+        {
+            Configuration.Initialize("36e02089265925772f085fcd3884ec9b");
+            LightService.Discover();
         }
     }
 }

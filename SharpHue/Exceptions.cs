@@ -44,4 +44,13 @@ namespace SharpHue
         public HueConfigurationException(string message) : base(message) { }
         public HueConfigurationException(string message, Exception innerException) : base(message, innerException) { }
     }
+
+    /// <summary>
+    /// Thrown when the light state builder is misconfigured.
+    /// </summary>
+    public class StateBuilderException : Exception
+    {
+        public StateBuilderException(string message) : base(message) { }
+        public StateBuilderException(string message, Exception innerException) : base(message, innerException) { }
+    }
 }
