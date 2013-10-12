@@ -10,6 +10,11 @@ namespace SharpHue
 {
     static class JsonClient
     {
+        public static JToken Request(string apiPath)
+        {
+            return Request(HttpMethod.Get, apiPath, (string)null);
+        }
+
         public static JToken Request(HttpMethod method, string apiPath)
         {
             return Request(method, apiPath, (string)null);
@@ -17,12 +22,15 @@ namespace SharpHue
 
         public static JToken Request(HttpMethod method, string apiPath, object data)
         {
-            return Request(method, apiPath, JsonConvert.SerializeObject(data));
+            return Request(method, apiPath, JsonConvert.SerializeObject(data, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }));
         }
 
         public static JToken Request(HttpMethod method, string apiPath, string data)
         {
-            Contract.Requires(Configuration.DeviceIP != null);
+            if (Configuration.DeviceIP == null)
+            {
+                throw new HueConfigurationException("DeviceIP has not been initialized. Try calling Configuration.Initialize().");
+            }
 
             string response = InvokeRequest(Configuration.DeviceIP, apiPath, data, method);
             JToken responseObject = JToken.Parse(response);

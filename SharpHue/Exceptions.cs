@@ -28,4 +28,10 @@ namespace SharpHue
         public HubIPAddressNotFoundException(Exception innerException) : base(DEFAULT_MESSAGE, innerException) { }
         public HubIPAddressNotFoundException(string message, Exception innerException) : base(message, innerException) { }
     }
+
+    public class HueConfigurationException : Exception
+    {
+        public HueConfigurationException(string message) : base(message) { }
+        public HueConfigurationException(string message, Exception innerException) : base(message, innerException) { }
+    }
 }
