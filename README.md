@@ -77,6 +77,8 @@ Lights also contain state information. To get the current hue of light 2:
 lights[2].State.Hue
 ```
 
+**NOTE:** Accessing a `LightCollection` by index is **one-based**, not **zero-based** like most arrays. Attempting to retrieve `lights[0]` will return `null`.
+
 ### Setting Light State
 
 To update the state of a light, you can either pass in a `JObject` directly with your own state information, or use the provided `LightStateBuilder` class:
