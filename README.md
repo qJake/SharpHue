@@ -114,3 +114,11 @@ new LightStateBuilder()
     .Brightness(255)
     .Apply();
 ```
+
+## Contributing
+
+Report bugs, request features, or fork it, code it yourself, and send me a pull request!
+
+## Credits
+
+Uses the [Newtonsoft.Json](http://json.codeplex.com/) library for JSON handling.
