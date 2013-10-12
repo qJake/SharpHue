@@ -25,7 +25,7 @@ First, you must initialize the API configuration, so that the API knows your use
 
 #### 1. Register new user
 
-```csharp
+```cs
 Configruation.AddUser();
 ```
 
@@ -35,7 +35,7 @@ After this method returns, if there were no errors or exceptions, the `Configura
 
 #### 2. Initialize with existing user
 
-```csharp
+```cs
 Configuration.Initialize("Username Here");
 ```
 
@@ -43,7 +43,7 @@ This will first attempt to locate your bridge device automatically using Philips
 
 #### 3. Initialize with existing user and manually-defined IP
 
-```csharp
+```cs
 Configuration.Initialize("Username Here", IPAddress.Parse("192.68.x.x"));
 ```
 
@@ -51,7 +51,7 @@ This will initialize the API with the specified preexisting username, and will e
 
 ### Retrieving Lights
 
-```csharp
+```cs
 LightCollection lights = new LightCollection();
 ```
 
@@ -59,19 +59,19 @@ This will retrieve all lights and their associated light state information.
 
 Once you have a light collection, you can reference lights either by index:
 
-```csharp
+```cs
 lights[1]
 ```
 
 Or by name:
 
-```csharp
+```cs
 lights["Kitchen Light 1"]
 ```
 
 Lights also contain state information. To get the current hue of light 2:
 
-```csharp
+```cs
 lights[2].State.Hue
 ```
 
@@ -79,7 +79,7 @@ lights[2].State.Hue
 
 To update the state of a light, you can either pass in a `JObject` directly with your own state information, or use the provided `LightStateBuilder` class:
 
-```csharp
+```cs
 LightStateBuilder builder = new LightStateBuilder()
                             .TurnOn()
                             .Saturation(128)
@@ -92,7 +92,7 @@ You use the light state builder by chaining various methods, then pass the build
 
 Alternately, you can just use a LightStateBuilder to apply a new state to one or more lights:
 
-```csharp
+```cs
 new LightStateBuilder()
     .For(lights[1], lights[3])
     .TurnOn()
@@ -103,7 +103,7 @@ new LightStateBuilder()
 
 You can also apply a new state to every single light using `.ForAll()`:
 
-```csharp
+```cs
 // Party Mode
 new LightStateBuilder()
     .ForAll()
