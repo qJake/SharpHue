@@ -89,3 +89,26 @@ lights[1].SetState(builder);
 ```
 
 You use the light state builder by chaining various methods, then pass the builder into whichever light(s) you want to update using `SetState()`.
+
+Alternately, you can just use a LightStateBuilder to apply a new state to one or more lights:
+
+```csharp
+new LightStateBuilder()
+    .For(lights[1], lights[3])
+    .TurnOn()
+    .ColorTemperature(137)
+    .Brightness(255)
+    .Apply();
+```
+
+You can also apply a new state to every single light using `.ForAll()`:
+
+```csharp
+// Party Mode
+new LightStateBuilder()
+    .ForAll()
+    .TurnOn()
+    .Effect(LightEffect.ColorLoop)
+    .Brightness(255)
+    .Apply();
+```
