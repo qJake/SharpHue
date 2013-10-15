@@ -79,30 +79,68 @@ lights[2].State.Hue
 
 **NOTE:** Accessing a `LightCollection` by index is **one-based**, not **zero-based** like most arrays. Attempting to retrieve `lights[0]` will return `null`.
 
-### Setting Light State
+### Enumerating Lights
 
-To update the state of a light, you can either pass in a `JObject` directly with your own state information, or use the provided `LightStateBuilder` class:
+`LightCollection` implements `IReadOnlyCollection<T>` using `Light` as its generic parameter, so if you have a `LightCollection`, you can do anything you can do with other enumerators, including LINQ:
 
 ```cs
+var UpstairsLightsOn = (from l in lights
+                        where l.Name.StartsWith("2F")
+                        where l.State.IsOn
+                        select l).ToList();
+```
+
+### Setting Light State
+
+#### Using JSON
+
+To update the state of a light, you can pass in a `JObject` directly with your own state information:
+
+```cs
+var state = new JObject(new JProperty("on", true));
+lights[3].SetState(state);
+```
+
+Or even just write your own JSON:
+
+```cs
+var json = JObject.Parse("{on: true, ct: 137, bri: 255, effect: \"colorloop\"}");
+lights[5].SetState(json);
+```
+
+Using a `JObject` is required for basic JSON validation (so that a non-JSON string isn't passed in and sent to the device).
+
+#### Using `LightStateBuilder`
+
+An easier way to build a new state is to use the provided `LightStateBuilder` class:
+
+```cs
+// Build a new light state
 LightStateBuilder builder = new LightStateBuilder()
                             .TurnOn()
                             .Saturation(128)
                             .Brightness(128)
                             .Effect(LightEffect.ColorLoop);
+                            
+// Apply the state to one or more lights
 lights[1].SetState(builder);
+lights[4].SetState(builder);
 ```
 
 You use the light state builder by chaining various methods, then pass the builder into whichever light(s) you want to update using `SetState()`.
 
-Alternately, you can just use a LightStateBuilder to apply a new state to one or more lights:
+#### Using `LightStateBuilder` Exclusively
+
+You can also just use a LightStateBuilder directly, to apply a new state to one or more lights:
 
 ```cs
-new LightStateBuilder()
-    .For(lights[1], lights[3])
-    .TurnOn()
-    .ColorTemperature(137)
-    .Brightness(255)
-    .Apply();
+  new LightStateBuilder()
+      .For(lights[1], lights[3]) // Specifies one or more lights which this new state is for
+// Or .For(lights, 1, 3)
+      .TurnOn()                  // Turns on the light(s)
+      .ColorTemperature(137)     // Sets the color temperature to 6500K
+      .Brightness(255)           // Set the brightness to maximum
+      .Apply();                  // Send the light state that was just built to the lights specified in .For()
 ```
 
 You can also apply a new state to every single light using `.ForAll()`:
@@ -116,6 +154,8 @@ new LightStateBuilder()
     .Brightness(255)
     .Apply();
 ```
+
+Order matters! Always call `.Apply()` last, because you cannot call any more methods after Apply (it returns `void`). Also, if you are using `.Apply()`, be sure to call either `.For()` or `.ForAll()`, otherwise an exception will be thrown.
 
 ## Contributing
 
