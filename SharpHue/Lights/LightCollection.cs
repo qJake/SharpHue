@@ -65,6 +65,8 @@ namespace SharpHue
         /// </summary>
         public void Refresh()
         {
+            Lights.Clear();
+
             JObject lights = JsonClient.Request(HttpMethod.Get, Configuration.GetAuthRequest("/lights")) as JObject;
 
             for (int i = 1; i <= Configuration.MAX_LIGHTS; i++)
