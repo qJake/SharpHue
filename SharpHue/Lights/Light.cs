@@ -59,6 +59,11 @@ namespace SharpHue
             if (localState == null)
             {
                 localState = JsonClient.Request(Configuration.GetAuthRequest("/lights/" + ID));
+                JsonConvert.PopulateObject(localState.ToString(), this);
+            }
+            else
+            {
+                JsonConvert.PopulateObject(localState.ToString(), State);
             }
 
             JsonConvert.PopulateObject(localState.ToString(), this);
