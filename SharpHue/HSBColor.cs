@@ -39,24 +39,30 @@ namespace SharpHue
             this.b = temp.b;
         }
 
+        public HSBColor(int ColorTemperature) : this(FromColorTemperature(ColorTemperature)) { }
+
         public float H
         {
             get { return h; }
+            set { value = h; }
         }
 
         public float S
         {
             get { return s; }
+            set { value = s; }
         }
 
         public float B
         {
             get { return b; }
+            set { value = b; }
         }
 
         public int A
         {
             get { return a; }
+            set { value = a; }
         }
 
         public Color Color
@@ -210,6 +216,71 @@ namespace SharpHue
             ret.b = max;
 
             return ret;
+        }
+
+        public static Color FromColorTemperature(int temp)
+        {
+            var t = temp / 100;
+    
+            double red, green, blue;
+
+            // Red:
+
+            if (t <= 66)
+            {
+                red = 255;
+            }
+            else
+            {
+                red = t - 60;
+                red = 329.698727446 * Math.Pow(red, -0.1332047592);
+                if (red < 0) { red = 0; }
+                if (red > 255) { red = 255; }
+            }
+    
+            // Green:
+
+            if (t <= 66)
+            {
+                green = t;
+                green = 99.4708025861 * Math.Log(green) - 161.1195681661;
+                if (green < 0) { green = 0; }
+                if (green > 255) { green = 255; }
+            }
+            else
+            {
+                green = t - 60;
+                green = 288.1221695283 * Math.Pow(green, -0.0755148492);
+                if (green < 0) { green = 0; }
+                if (green > 255) { green = 255; }
+            }
+    
+            // Blue:
+
+            if (t >= 66)
+            {
+                blue = 255;
+            }
+            else
+            {
+                if (t <= 19)
+                {
+                    blue = 0;
+                }
+                else
+                {
+                    blue = t - 10;
+                    blue = 138.5177312231 * Math.Log(blue) - 305.0447927307;
+                    if (blue < 0) { blue = 0; }
+                    if (blue > 255) { blue = 255; }
+                }
+            }
+
+            int r = (int)Math.Round(Math.Min(Math.Max(red, 0), 255));
+            int g = (int)Math.Round(Math.Min(Math.Max(green, 0), 255));
+            int b = (int)Math.Round(Math.Min(Math.Max(blue, 0), 255));
+
+            return Color.FromArgb(r, g, b);
         }
     }
 }

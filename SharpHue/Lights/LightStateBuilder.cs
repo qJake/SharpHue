@@ -170,7 +170,7 @@ namespace SharpHue
         /// When this state is sent to the bridge, sets the current color temperature of the light (153 to 500).
         /// </summary>
         /// <returns>This LightStateBuilder instance, for method chaining.</returns>
-        public LightStateBuilder ColorTemperature(byte temp)
+        public LightStateBuilder ColorTemperature(ushort temp)
         {
             AddOrUpdateProperty("ct", temp);
             return this;
