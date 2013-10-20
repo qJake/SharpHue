@@ -125,6 +125,7 @@
     <Compile Include="Lights\LightState.cs" />
     <Compile Include="Lights\LightStateBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\MathEx.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

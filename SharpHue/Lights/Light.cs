@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -10,6 +11,11 @@ namespace SharpHue
     [JsonObject]
     public class Light
     {
+        /// <summary>
+        /// Occurs when the state of the light changes locally (i.e. when using a LightStateBuilder).
+        /// </summary>
+        public event Action<object, LightState> StateChanged;
+
         /// <summary>
         /// Gets the numeric ID of this light.
         /// </summary>
@@ -48,10 +54,19 @@ namespace SharpHue
         /// <summary>
         /// Refreshes this light's state information.
         /// </summary>
-        public void RefreshState()
+        public void RefreshState(JToken localState = null)
         {
-            var state = JsonClient.Request(Configuration.GetAuthRequest("/lights/" + ID));
-            JsonConvert.PopulateObject(state.ToString(), this);
+            if (localState == null)
+            {
+                localState = JsonClient.Request(Configuration.GetAuthRequest("/lights/" + ID));
+            }
+
+            JsonConvert.PopulateObject(localState.ToString(), this);
+
+            if (StateChanged != null)
+            {
+                StateChanged(this, State);
+            }
         }
 
         /// <summary>
@@ -71,6 +86,8 @@ namespace SharpHue
         public void SetState(JObject newState)
         {
             JsonClient.Request(HttpMethod.Put, Configuration.GetAuthRequest("/lights/" + ID + "/state"), newState);
+
+            RefreshState(newState);
         }
     }
 }

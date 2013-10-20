@@ -4,21 +4,6 @@ using Newtonsoft.Json;
 
 namespace SharpHue
 {
-    /* Model:
-     {
-        "hue": 50000,
-        "on": true,
-        "effect": "none",
-        "alert": "none",
-        "bri": 200,
-        "sat": 200,
-        "ct": 500,
-        "xy": [0.5, 0.5],
-        "reachable": true,
-        "colormode": "hs"
-    }
-    */
-    
     /// <summary>
     /// Stores information about the state of a light, including color information, current alert / effect settings, and more.
     /// </summary>
@@ -86,16 +71,23 @@ namespace SharpHue
         public string CurrentColorMode { get; private set; }
 
         /// <summary>
-        /// Sets the current color state from a <see cref="System.Drawing.Color" /> object.
+        /// Gets the current color state represented as a Color object.
         /// </summary>
         public Color Color
         {
-            set
+            get
             {
-                HSBColor c = new HSBColor(value);
-                Hue = (uint)(Math.Pow(c.H, 2));
-                Saturation = (byte)c.S;
-                Brightness = (byte)c.B;
+                switch (CurrentColorMode.ToLower())
+                {
+                    case "xy":
+                        throw new InvalidOperationException("Converting from X,Y to a Color is not supported at this time.");
+                    case "ct":
+                        return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
+                    case "hs":
+                        return new HSBColor(Hue / 255, Saturation, Brightness).Color;
+                    default:
+                        return new Color();
+                }
             }
         }
     }
