@@ -18,7 +18,13 @@ namespace SharpHue
         /// <summary>
         /// Initializes a new instance of the LightCollection class.
         /// </summary>
-        public LightCollection()
+        public LightCollection() : this(true) { }
+
+        /// <summary>
+        /// Initializes a new instance of the LightCollection class.
+        /// </summary>
+        /// <param name="refresh">Whether or not to refresh immediately during initialization.</param>
+        public LightCollection(bool refresh)
         {
             if (Configuration.DeviceIP == null)
             {
