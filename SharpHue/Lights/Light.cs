@@ -52,6 +52,14 @@ namespace SharpHue
         public string SoftwareVersion { get; private set; }
 
         /// <summary>
+        /// Initializes a new instance of the Light class.
+        /// </summary>
+        public Light()
+        {
+            State = new LightState();
+        }
+
+        /// <summary>
         /// Refreshes this light's state information.
         /// </summary>
         public void RefreshState(JToken localState = null)
