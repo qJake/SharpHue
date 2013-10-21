@@ -77,16 +77,42 @@ namespace SharpHue
         {
             get
             {
-                switch (CurrentColorMode.ToLower())
+                if (CurrentColorMode == null)
                 {
-                    case "xy":
-                        throw new InvalidOperationException("Converting from X,Y to a Color is not supported at this time.");
-                    case "ct":
-                        return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
-                    case "hs":
-                        return new HSBColor(Hue / 255, Saturation, Brightness).Color;
-                    default:
-                        return new Color();
+                    // Determine color without color mode
+                    if (!IsOn || !IsReachable)
+                    {
+                        return Color.Black;
+                    }
+                    else
+                    {
+                        if (ColorTemperature > 0)
+                        {
+                            return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
+                        }
+                        else if (Hue > 0 && Saturation > 0 && Brightness > 0)
+                        {
+                            return new HSBColor(Hue / 255, Saturation, Brightness).Color;
+                        }
+                        else
+                        {
+                            return Color.Black;
+                        }
+                    }
+                }
+                else
+                {
+                    switch (CurrentColorMode.ToLower())
+                    {
+                        case "xy":
+                            throw new InvalidOperationException("Converting from X,Y to a Color is not supported at this time.");
+                        case "ct":
+                            return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
+                        case "hs":
+                            return new HSBColor(Hue / 255, Saturation, Brightness).Color;
+                        default:
+                            return Color.Black;
+                    }
                 }
             }
         }
