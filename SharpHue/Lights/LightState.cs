@@ -80,24 +80,17 @@ namespace SharpHue
                 if (CurrentColorMode == null)
                 {
                     // Determine color without color mode
-                    if (!IsOn || !IsReachable)
+                    if (ColorTemperature > 0)
                     {
-                        return Color.Black;
+                        return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
+                    }
+                    else if (Hue > 0 && Saturation > 0 && Brightness > 0)
+                    {
+                        return new HSBColor(Hue / 255, Saturation, Brightness).Color;
                     }
                     else
                     {
-                        if (ColorTemperature > 0)
-                        {
-                            return new HSBColor(MathEx.TranslateValue(ColorTemperature, 137, 500, 2000, 11500, true)).Color;
-                        }
-                        else if (Hue > 0 && Saturation > 0 && Brightness > 0)
-                        {
-                            return new HSBColor(Hue / 255, Saturation, Brightness).Color;
-                        }
-                        else
-                        {
-                            return Color.Black;
-                        }
+                        return Color.Black;
                     }
                 }
                 else
