@@ -24,7 +24,7 @@ namespace SharpHue
         /// <summary>
         /// Stores the App ID used for registering a new user.
         /// </summary>
-        internal const string APP_ID = "SharpHue";
+        internal const string APP_ID = "SiberHue";
 
         /// <summary>
         /// Stores the maximum amount of lights that can be stored in the Bridge system.
