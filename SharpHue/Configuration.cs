@@ -22,9 +22,9 @@ namespace SharpHue
         public static IPAddress DeviceIP { get; set; }
 
         /// <summary>
-        /// Stores the App ID used for registering a new user.
+        /// Gets or sets the App ID used for registering a new user.
         /// </summary>
-        internal const string APP_ID = "SiberHue";
+        public static string AppId { get; set; }
 
         /// <summary>
         /// Stores the maximum amount of lights that can be stored in the Bridge system.
@@ -46,6 +46,13 @@ namespace SharpHue
         /// </summary>
         public static void AddUser()
         {
+            //The Default name is none is specified.
+            AddUser("SharpHue");
+        }
+
+        public static void AddUser(string appId)
+        {
+            AppId = appId;
             DiscoverBridgeIP();
             RegisterNewUser();
         }
@@ -110,7 +117,7 @@ namespace SharpHue
 
             dynamic data = new ExpandoObject();
 
-            data.devicetype = APP_ID;
+            data.devicetype = AppId;
 
             if (username != null)
             {
