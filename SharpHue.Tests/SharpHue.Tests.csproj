@@ -61,7 +61,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SharpHue\SharpHue.csproj">
       <Project>{33f0d583-d76d-4a3a-8c16-febbc1929161}</Project>
-      <Name>SharpHue</Name>
+      <Name>HueNetLibHosj</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

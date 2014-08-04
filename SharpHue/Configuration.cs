@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Net;
 using System.Net.Http;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpHue.Utilities;
 
 namespace SharpHue
 {
@@ -123,13 +126,36 @@ namespace SharpHue
             {
                 data.username = username;
             }
-            
+
             JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
 
             if (response[0]["success"]["username"] != null)
             {
                 Username = response[0]["success"]["username"].ToString();
             }
+        }
+
+        public static List<WhitelistItem> Whitelist()
+        {
+            var whitelist = new List<WhitelistItem>();
+            var configuration = JsonClient.Request(HttpMethod.Get, GetAuthRequest("/config")) as JObject;
+            var whitelistJson = configuration["whitelist"];
+
+            foreach (var whitelistItem in whitelistJson.Children())
+            {
+                var id = ((JProperty) whitelistItem).Name;
+                
+                foreach (var whiteListItemChild in whitelistItem.Children())
+                {
+                    var item = JsonConvert.DeserializeObject<WhitelistItem>(whiteListItemChild.ToString());
+                    item.ID = id;
+                    whitelist.Add(item);
+                }
+                
+                
+            }
+            
+            return whitelist;
         }
     }
 }
