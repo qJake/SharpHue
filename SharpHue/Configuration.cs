@@ -107,6 +107,31 @@ namespace SharpHue
             }
         }
 
+        public static bool CreateNewUser(string id, string username = null)
+        {
+            //TODO use response instead of bool
+            bool result;
+            //try
+            //{
+                dynamic data = new ExpandoObject();
+
+                data.devicetype = id;
+
+                if (username != null)
+                {
+                    data.username = username;
+                }
+
+                JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
+                result = true;
+            //}
+            //catch (Exception)
+            //{
+            //    result = false;
+            //}
+            return result;
+
+        }
         /// <summary>
         /// Registers a new user with the bridge device.
         /// </summary>
@@ -143,18 +168,18 @@ namespace SharpHue
 
             foreach (var whitelistItem in whitelistJson.Children())
             {
-                var id = ((JProperty) whitelistItem).Name;
-                
+                var id = ((JProperty)whitelistItem).Name;
+
                 foreach (var whiteListItemChild in whitelistItem.Children())
                 {
                     var item = JsonConvert.DeserializeObject<WhitelistItem>(whiteListItemChild.ToString());
                     item.ID = id;
                     whitelist.Add(item);
                 }
-                
-                
+
+
             }
-            
+
             return whitelist;
         }
     }
