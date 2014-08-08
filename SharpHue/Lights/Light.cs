@@ -102,5 +102,10 @@ namespace SharpHue
 
             RefreshState(newState);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
