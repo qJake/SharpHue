@@ -1,6 +1,18 @@
 # SharpHue
 
-An open-source .NET library for the Philips Hue lighting system.
+An open-source .NET library for the Philips Hue lighting system.  
+**Current Version:** 1.1
+
+## Implementation Status
+
+The following Hue APIs are currently supported:
+
+> - [X] Light API
+> - [X] Configuration / Whitelist API
+> - [ ] Group API
+> - [ ] Schedules API
+> - [ ] Sensors API
+> - [ ] Rules API
 
 
 ## Current Features
