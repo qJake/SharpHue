@@ -52,6 +52,31 @@ namespace SharpHue
             return responseObject;
         }
 
+        public static JToken RequestSecure(string apiPath)
+        {
+            return Request(HttpMethod.Get, CreateAuthenticatedRequest(apiPath), (string)null);
+        }
+
+        public static JToken RequestSecure(HttpMethod method, string apiPath)
+        {
+            return Request(method, CreateAuthenticatedRequest(apiPath), (string)null);
+        }
+
+        public static JToken RequestSecure(HttpMethod method, string apiPath, JObject data)
+        {
+            return Request(method, CreateAuthenticatedRequest(apiPath), data.ToString());
+        }
+
+        public static JToken RequestSecure(HttpMethod method, string apiPath, object data)
+        {
+            return Request(method, CreateAuthenticatedRequest(apiPath), JsonConvert.SerializeObject(data, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public static JToken RequestSecure(HttpMethod method, string apiPath, string data)
+        {
+            return Request(method, CreateAuthenticatedRequest(apiPath), data);
+        }
+
         public static JToken RequestBroker()
         {
             WebRequest req = WebRequest.Create(new Uri("https://www.meethue.com/api/nupnp"));
@@ -60,6 +85,18 @@ namespace SharpHue
             var data = respReader.ReadToEnd();
 
             return JToken.Parse(data);
+        }
+
+        /// <summary>
+        /// Builds an auth request by prepending /api/ and the username.
+        /// </summary>
+        /// <param name="apiPath">The path, after /api/{username}/.</param>
+        /// <returns>The full API request string.</returns>
+        internal static string CreateAuthenticatedRequest(string apiPath)
+        {
+            Configuration.RequireAuthentication();
+
+            return "/api/" + Configuration.Username + (apiPath.StartsWith("/") ? "" : "/") + apiPath;
         }
 
         private static string InvokeRequest(IPAddress baseUrl, string page, string data, HttpMethod method)

@@ -116,6 +116,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\PortalInfo.cs" />
+    <Compile Include="Config\UpdateInfo.cs" />
+    <Compile Include="Config\WhitelistItem.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="HSBColor.cs" />
     <Compile Include="JsonClient.cs" />
@@ -128,7 +132,6 @@
     <Compile Include="Lights\LightStateBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\MathEx.cs" />
-    <Compile Include="Utilities\WhitelistItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

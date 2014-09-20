@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SharpHue.Utilities;
 
 namespace SharpHue
 {
@@ -35,34 +34,17 @@ namespace SharpHue
         internal const int MAX_LIGHTS = 50;
 
         /// <summary>
+        /// Stores the default App ID if none is specified.
+        /// </summary>
+        internal const string DEFAULT_APP_ID = "SharpHue";
+
+        /// <summary>
         /// Initializes the Configuration class.
         /// </summary>
         static Configuration()
         {
             Username = null;
             DeviceIP = null;
-        }
-
-        /// <summary>
-        /// Adds a new user to the system. After this method returns, the <see cref="Username" /> property will contain the new username.
-        /// NOTE: This method requires that you press the button on your Hue Bridge first!
-        /// </summary>
-        public static void AddUser()
-        {
-            //The Default name is none is specified.
-            AddUser("SharpHue");
-        }
-
-        /// <summary>
-        /// Adds a new user to the system with the specified App ID. After this method returns, the <see cref="Username" /> property will contain the new username.
-        /// NOTE: This method requires that you press the button on your Hue bridge first!
-        /// </summary>
-        /// <param name="appId">The App ID to use when registering a new user in the system.</param>
-        public static void AddUser(string appId)
-        {
-            AppID = appId;
-            DiscoverBridgeIP();
-            RegisterNewUser();
         }
 
         /// <summary>
@@ -82,18 +64,87 @@ namespace SharpHue
         /// <param name="bridgeIP">The IP address of the bridge device.</param>
         public static void Initialize(string user, IPAddress bridgeIP)
         {
-            Username = null;
+            Username = user;
             DeviceIP = bridgeIP;
         }
 
         /// <summary>
-        /// Builds an auth request by prepending /api/ and the username.
+        /// Adds a new user to the system. After this method returns, the <see cref="Username" /> property will contain the new username.
+        /// NOTE: This method requires that you press the button on your Hue Bridge first!
         /// </summary>
-        /// <param name="apiPath">The path, after /api/{username}/.</param>
-        /// <returns>The full API request string.</returns>
-        internal static string GetAuthRequest(string apiPath)
+        public static void AddUser()
         {
-            return "/api/" + Username + (apiPath.StartsWith("/") ? "" : "/") + apiPath;
+            AddUser(DEFAULT_APP_ID);
+        }
+
+        /// <summary>
+        /// Adds a new user to the system with the specified App ID. After this method returns, the <see cref="Username" /> property will contain the new username.
+        /// NOTE: This method requires that you press the button on your Hue bridge first!
+        /// </summary>
+        /// <param name="appId">The App ID to use when registering a new user in the system.</param>
+        public static void AddUser(string appId)
+        {
+            AppID = string.Format("{0}#{1}", appId, Environment.MachineName);
+            DiscoverBridgeIP();
+            RegisterNewUser();
+        }
+
+        /// <summary>
+        /// Retrieves the complete bridge configuration object, including the user whitelist.
+        /// </summary>
+        /// <returns>A <see cref="SharpHue.Config.Configuration" /> object representing the current configuration state of the bridge.</returns>
+        public static Config.Configuration GetBridgeConfiguration()
+        {
+            RequireAuthentication();
+
+            return ((JObject)JsonClient.RequestSecure("/config")).ToObject<Config.Configuration>();
+        }
+
+        /// <summary>
+        /// Deletes the specified user from the whitelist.
+        /// </summary>
+        /// <param name="username">The user to delete.</param>
+        /// <returns><c>true</c> on success, <c>false</c> otherwise.</returns>
+        public static bool DeleteUser(string username)
+        {
+            RequireAuthentication();
+
+            JArray response = (JArray)JsonClient.RequestSecure(HttpMethod.Delete, "/config/whitelist/" + username);
+
+            try
+            {
+                return !string.IsNullOrWhiteSpace(response[0]["success"].Value<string>());
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the configuration has been initialized with a valid IP address. Otherwise, throws an exception.
+        /// </summary>
+        internal static void RequireInitialization()
+        {
+            if (DeviceIP == null)
+            {
+                throw new HueConfigurationException("DeviceIP has not been initialized. Try calling Configuration.Initialize().");
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the configuration has been initialized with a valid IP address and user. Otherwise, throws an exception.
+        /// </summary>
+        internal static void RequireAuthentication()
+        {
+            if (DeviceIP == null)
+            {
+                throw new HueConfigurationException("DeviceIP has not been initialized. Try calling Configuration.Initialize().");
+            }
+            if (Username == null)
+            {
+                throw new HueConfigurationException("Username has not been set. Try calling AddUser() or set the Username property to an existing user ID.");
+            }
         }
 
         /// <summary>
@@ -112,41 +163,14 @@ namespace SharpHue
             }
         }
 
-        public static bool CreateNewUser(string id, string username = null)
-        {
-            //TODO use response instead of bool
-            bool result;
-            //try
-            //{
-                dynamic data = new ExpandoObject();
-
-                data.devicetype = id;
-
-                if (username != null)
-                {
-                    data.username = username;
-                }
-
-                JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
-                result = true;
-            //}
-            //catch (Exception)
-            //{
-            //    result = false;
-            //}
-            return result;
-
-        }
         /// <summary>
         /// Registers a new user with the bridge device.
         /// </summary>
         /// <param name="username">The new username to register.</param>
-        private static void RegisterNewUser(string username = null)
+        /// <exception cref="HueConfigurationException">Thrown when this class has not been initialized (the <see cref="DeviceIP" /> is <c>null</c>).</exception>
+        private static bool RegisterNewUser(string username = null)
         {
-            if (DeviceIP == null)
-            {
-                throw new HueConfigurationException("DeviceIP has not been initialized. Try calling Configuration.Initialize().");
-            }
+            RequireInitialization();
 
             dynamic data = new ExpandoObject();
 
@@ -159,33 +183,19 @@ namespace SharpHue
 
             JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
 
-            if (response[0]["success"]["username"] != null)
+            try
             {
-                Username = response[0]["success"]["username"].ToString();
-            }
-        }
-
-        public static List<WhitelistItem> Whitelist()
-        {
-            var whitelist = new List<WhitelistItem>();
-            var configuration = JsonClient.Request(HttpMethod.Get, GetAuthRequest("/config")) as JObject;
-            var whitelistJson = configuration["whitelist"];
-
-            foreach (var whitelistItem in whitelistJson.Children())
-            {
-                var id = ((JProperty)whitelistItem).Name;
-
-                foreach (var whiteListItemChild in whitelistItem.Children())
+                if (response[0]["success"]["username"] != null)
                 {
-                    var item = JsonConvert.DeserializeObject<WhitelistItem>(whiteListItemChild.ToString());
-                    item.ID = id;
-                    whitelist.Add(item);
+                    Username = response[0]["success"]["username"].ToString();
+                    return true;
                 }
-
-
+                return false;
             }
-
-            return whitelist;
+            catch
+            {
+                return false;
+            }
         }
     }
 }
