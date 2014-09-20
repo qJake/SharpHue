@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Net;
 using System.Net.Http;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpHue.Utilities;
 
 namespace SharpHue
 {
@@ -22,9 +25,9 @@ namespace SharpHue
         public static IPAddress DeviceIP { get; set; }
 
         /// <summary>
-        /// Stores the App ID used for registering a new user.
+        /// Gets or sets the App ID used for registering a new user.
         /// </summary>
-        internal const string APP_ID = "SharpHue";
+        public static string AppId { get; set; }
 
         /// <summary>
         /// Stores the maximum amount of lights that can be stored in the Bridge system.
@@ -46,6 +49,13 @@ namespace SharpHue
         /// </summary>
         public static void AddUser()
         {
+            //The Default name is none is specified.
+            AddUser("SharpHue");
+        }
+
+        public static void AddUser(string appId)
+        {
+            AppId = appId;
             DiscoverBridgeIP();
             RegisterNewUser();
         }
@@ -97,6 +107,31 @@ namespace SharpHue
             }
         }
 
+        public static bool CreateNewUser(string id, string username = null)
+        {
+            //TODO use response instead of bool
+            bool result;
+            //try
+            //{
+                dynamic data = new ExpandoObject();
+
+                data.devicetype = id;
+
+                if (username != null)
+                {
+                    data.username = username;
+                }
+
+                JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
+                result = true;
+            //}
+            //catch (Exception)
+            //{
+            //    result = false;
+            //}
+            return result;
+
+        }
         /// <summary>
         /// Registers a new user with the bridge device.
         /// </summary>
@@ -110,19 +145,42 @@ namespace SharpHue
 
             dynamic data = new ExpandoObject();
 
-            data.devicetype = APP_ID;
+            data.devicetype = AppId;
 
             if (username != null)
             {
                 data.username = username;
             }
-            
+
             JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
 
             if (response[0]["success"]["username"] != null)
             {
                 Username = response[0]["success"]["username"].ToString();
             }
+        }
+
+        public static List<WhitelistItem> Whitelist()
+        {
+            var whitelist = new List<WhitelistItem>();
+            var configuration = JsonClient.Request(HttpMethod.Get, GetAuthRequest("/config")) as JObject;
+            var whitelistJson = configuration["whitelist"];
+
+            foreach (var whitelistItem in whitelistJson.Children())
+            {
+                var id = ((JProperty)whitelistItem).Name;
+
+                foreach (var whiteListItemChild in whitelistItem.Children())
+                {
+                    var item = JsonConvert.DeserializeObject<WhitelistItem>(whiteListItemChild.ToString());
+                    item.ID = id;
+                    whitelist.Add(item);
+                }
+
+
+            }
+
+            return whitelist;
         }
     }
 }
