@@ -27,7 +27,7 @@ namespace SharpHue
         /// <summary>
         /// Gets or sets the App ID used for registering a new user.
         /// </summary>
-        public static string AppId { get; set; }
+        public static string AppID { get; set; }
 
         /// <summary>
         /// Stores the maximum amount of lights that can be stored in the Bridge system.
@@ -53,9 +53,14 @@ namespace SharpHue
             AddUser("SharpHue");
         }
 
+        /// <summary>
+        /// Adds a new user to the system with the specified App ID. After this method returns, the <see cref="Username" /> property will contain the new username.
+        /// NOTE: This method requires that you press the button on your Hue bridge first!
+        /// </summary>
+        /// <param name="appId">The App ID to use when registering a new user in the system.</param>
         public static void AddUser(string appId)
         {
-            AppId = appId;
+            AppID = appId;
             DiscoverBridgeIP();
             RegisterNewUser();
         }
@@ -145,7 +150,7 @@ namespace SharpHue
 
             dynamic data = new ExpandoObject();
 
-            data.devicetype = AppId;
+            data.devicetype = AppID;
 
             if (username != null)
             {
