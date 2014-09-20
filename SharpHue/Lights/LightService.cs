@@ -11,7 +11,7 @@ namespace SharpHue
         /// <param name="newState">The new state to apply to every light.</param>
         public static void SetStateAll(JObject newState)
         {
-            JsonClient.Request(HttpMethod.Put, Configuration.GetAuthRequest("/groups/0/action"), newState);
+            JsonClient.RequestSecure(HttpMethod.Put, "/groups/0/action", newState);
         }
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace SharpHue
         /// </summary>
         public static void Discover()
         {
-            JsonClient.Request(HttpMethod.Post, Configuration.GetAuthRequest("/lights"));
+            JsonClient.RequestSecure(HttpMethod.Post, "/lights");
         }
     }
 }

@@ -66,7 +66,7 @@ namespace SharpHue
         {
             if (localState == null)
             {
-                localState = JsonClient.Request(Configuration.GetAuthRequest("/lights/" + ID));
+                localState = JsonClient.RequestSecure("/lights/" + ID);
                 JsonConvert.PopulateObject(localState.ToString(), this);
             }
             else
@@ -98,7 +98,7 @@ namespace SharpHue
         /// <remarks>For information on valid properties, see this API reference: http://developers.meethue.com/1_lightsapi.html#16_set_light_state </remarks>
         public void SetState(JObject newState)
         {
-            JsonClient.Request(HttpMethod.Put, Configuration.GetAuthRequest("/lights/" + ID + "/state"), newState);
+            JsonClient.RequestSecure(HttpMethod.Put, "/lights/" + ID + "/state", newState);
 
             RefreshState(newState);
         }
