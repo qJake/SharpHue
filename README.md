@@ -14,23 +14,6 @@ The following Hue APIs are currently supported:
 > - [ ] Sensors API
 > - [ ] Rules API
 
-
-## Current Features
-
-* Add a new user to the Bridge whitelist
-* Retrieve all lights and light state information
-* Set new light state information
-* Set light state for multiple lights or all lights
-* Discover new lights
-
-
-## Planned Features
-
-* Schedule management (retrieve, add, edit, delete schedules)
-* Group management (retrieve, add, edit, delete groups)
-* Whitelist management (retrieve and delete users)
-
-
 ## Examples
 
 ### Configuration initialization
