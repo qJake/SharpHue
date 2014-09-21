@@ -37,7 +37,7 @@ namespace SharpHue.Config
         /// <returns>A string representing this whitelist entry.</returns>
         public override string ToString()
         {
-            return "Whitelist: " + ApplicationID;
+            return ApplicationID;
         }
     }
 }
