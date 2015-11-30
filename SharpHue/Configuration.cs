@@ -166,21 +166,15 @@ namespace SharpHue
         /// <summary>
         /// Registers a new user with the bridge device.
         /// </summary>
-        /// <param name="username">The new username to register.</param>
         /// <exception cref="HueConfigurationException">Thrown when this class has not been initialized (the <see cref="DeviceIP" /> is <c>null</c>).</exception>
-        private static bool RegisterNewUser(string username = null)
+        private static bool RegisterNewUser()
         {
             RequireInitialization();
 
             dynamic data = new ExpandoObject();
 
             data.devicetype = AppID;
-
-            if (username != null)
-            {
-                data.username = username;
-            }
-
+            
             JArray response = JsonClient.Request(HttpMethod.Post, "/api", data);
 
             try
