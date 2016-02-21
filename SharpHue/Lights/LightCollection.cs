@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace SharpHue
 {
@@ -69,20 +70,13 @@ namespace SharpHue
 
             JObject lights = JsonClient.RequestSecure(HttpMethod.Get, "/lights") as JObject;
 
-            for (int i = 1; i <= Configuration.MAX_LIGHTS; i++)
+            foreach (KeyValuePair<string, JToken> light in lights)
             {
-                if (lights[i.ToString()] != null)
-                {
-                    Light l = ((JObject)lights[i.ToString()]).ToObject<Light>();
-                    l.ID = i;
-                    l.RefreshState();
-                    Lights.Add(l);
-                }
-                else
-                {
-                    // Lights are sequential, break if we don't have a light with the specified index.
-                    break;
-                }
+                Light l = new Light();
+                l = light.Value.ToObject<Light>();
+                l.ID = Convert.ToInt16(light.Key);
+                Lights.Add(l);
+                l.RefreshState();
             }
         }
 
